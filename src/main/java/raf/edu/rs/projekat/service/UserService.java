@@ -41,6 +41,7 @@ public class UserService implements IService<User, Long>, UserDetailsService {
 
     @Override
     public <S extends User> S save(S var1) {
+        var1.setPassword(this.passwordEncoder.encode(var1.getPassword()));
         return userRepository.save(var1);
     }
 

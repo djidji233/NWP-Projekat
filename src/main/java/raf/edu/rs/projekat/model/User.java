@@ -1,16 +1,17 @@
 package raf.edu.rs.projekat.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "USERS")
 public class User {
     @Id
@@ -18,19 +19,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(name = "FIRST_NAME", length = 32)
-    //@NotBlank(message = "First name is mandatory")
+    @Column(name = "FIRST_NAME", length = 32, nullable = false)
+    @NotBlank(message = "First name is mandatory")
     private String firstName;
 
-    @Column(name = "LAST_NAME", length = 32)
-    //@NotBlank(message = "Last name is mandatory")
+    @Column(name = "LAST_NAME", length = 32, nullable = false)
+    @NotBlank(message = "Last name is mandatory")
     private String lastName;
 
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", nullable = false)
     @NotBlank(message = "Username is mandatory")
     private String username;
 
-    @Column(name = "PASSWORD")
+    @Column(name = "PASSWORD", nullable = false)
     @NotBlank(message = "Password is mandatory")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
@@ -65,7 +66,8 @@ public class User {
     @Column(name = "CAN_DESTROY_MACHINES")
     private Boolean CAN_DESTROY_MACHINES;
 
-//    @OneToMany
-//    private ArrayList<Machine> machines;
+    @OneToMany(mappedBy = "createdBy",
+                cascade = CascadeType.ALL)
+    private List<Machine> machines;
 
 }
