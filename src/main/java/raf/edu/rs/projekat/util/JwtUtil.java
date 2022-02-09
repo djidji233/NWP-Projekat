@@ -22,12 +22,36 @@ public class JwtUtil {
         return extractAllClaims(token).getSubject();
     }
 
-    public boolean isTokenExpired(String token){
+    public boolean isTokenExpired(String token) {
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    public String generateToken(String username){
+    public String generateToken(String username,
+                                boolean can_create_users,
+                                boolean can_read_users,
+                                boolean can_update_users,
+                                boolean can_delete_users,
+                                boolean can_search_machines,
+                                boolean can_start_machines,
+                                boolean can_stop_machines,
+                                boolean can_restart_machines,
+                                boolean can_create_machines,
+                                boolean can_destroy_machines) {
+
         Map<String, Object> claims = new HashMap<>();
+        // user permissions
+        claims.put("can_create_users", can_create_users);
+        claims.put("can_read_users", can_read_users);
+        claims.put("can_update_users", can_update_users);
+        claims.put("can_delete_users", can_delete_users);
+        // machine permissions
+        claims.put("can_search_machines", can_search_machines);
+        claims.put("can_start_machines", can_start_machines);
+        claims.put("can_stop_machines", can_stop_machines);
+        claims.put("can_restart_machines", can_restart_machines);
+        claims.put("can_create_machines", can_create_machines);
+        claims.put("can_destroy_machines", can_destroy_machines);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
