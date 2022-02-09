@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -17,6 +18,9 @@ public class Machine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long machineId;
 
+    @Column(nullable = false)
+    private String name;
+
     @Column
     private MachineStatus status;
 
@@ -26,6 +30,9 @@ public class Machine {
     private User createdBy; // referenca na korisnika koji je napravio ovu masinu
 
     @Column
-    private Boolean active;
+    private Date createdAt;
+
+    @Column
+    private Boolean active; // soft delete
 
 }

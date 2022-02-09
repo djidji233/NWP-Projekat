@@ -4,19 +4,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import raf.edu.rs.projekat.model.Machine;
+import raf.edu.rs.projekat.model.MachineStatus;
 import raf.edu.rs.projekat.model.User;
+import raf.edu.rs.projekat.repository.MachineRepository;
 import raf.edu.rs.projekat.repository.UserRepository;
+
+import java.util.Date;
 
 @Component
 public class BootstrapData implements CommandLineRunner {
 
     private final UserRepository userRepository;
-
+    private final MachineRepository machineRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public BootstrapData(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public BootstrapData(UserRepository userRepository, MachineRepository machineRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.machineRepository = machineRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -44,6 +50,14 @@ public class BootstrapData implements CommandLineRunner {
         user1.setCAN_CREATE_MACHINES(true);
         user1.setCAN_DESTROY_MACHINES(true);
         this.userRepository.save(user1);
+
+        Machine machine1 = new Machine();
+        machine1.setName("machine1");
+        machine1.setActive(true);
+        machine1.setCreatedAt(new Date());
+        machine1.setStatus(MachineStatus.RUNNING);
+        machine1.setCreatedBy(user1);
+        machineRepository.save(machine1);
 
 //        User user2 = new User();
 //        user2.setFirstName(FIRST_NAME_LIST[2]);

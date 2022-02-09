@@ -8,9 +8,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import raf.edu.rs.projekat.model.User;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    public User findByUsername(String username);
+    User findByUsername(String username);
+
+//    @Query("SELECT u FROM User u WHERE u.ime LIKE CONCAT('%',:ime,'%') AND u.prezime LIKE CONCAT('%',:prezime,'%') AND u.tip.ime LIKE CONCAT('%',:tip,'%') AND u.grupa.ime LIKE CONCAT('%',:grupa,'%')")
+//    List<User> searchUsers(@Param("ime") String ime, @Param("prezime") String prezime, @Param("tip") String tip, @Param("grupa") String grupa);
 
 //    @Modifying
 //    @Query("update User u set u.balance = u.balance + :amount")
