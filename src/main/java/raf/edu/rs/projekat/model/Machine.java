@@ -1,16 +1,15 @@
 package raf.edu.rs.projekat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "MACHINES")
 public class Machine {
     @Id
@@ -21,7 +20,8 @@ public class Machine {
     @Column(nullable = false)
     private String name;
 
-    @Column
+    @Column//(columnDefinition = "varchar(64) default 'STOPPED'")
+    @Enumerated(EnumType.STRING)
     private MachineStatus status;
 
     @ManyToOne

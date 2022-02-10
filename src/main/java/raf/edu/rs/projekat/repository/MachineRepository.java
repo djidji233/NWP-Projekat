@@ -8,13 +8,14 @@ import raf.edu.rs.projekat.model.Machine;
 import raf.edu.rs.projekat.model.MachineStatus;
 import raf.edu.rs.projekat.model.User;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Repository
 public interface MachineRepository  extends JpaRepository<Machine, Long> {
-    List<Machine> findAllByName(String name);
-    //List<Machine> findAllByStatusExists(List<String> status);
-    List<Machine> findAllByCreatedAtAfter(Date dateFrom);
-    List<Machine> findAllByCreatedAtBefore(Date dateTo);
+//    @Query("SELECT u FROM User u WHERE u.ime LIKE CONCAT('%',:ime,'%') AND u.prezime LIKE CONCAT('%',:prezime,'%') AND u.tip.ime LIKE CONCAT('%',:tip,'%') AND u.grupa.ime LIKE CONCAT('%',:grupa,'%')")
+//    List<User> searchUsers(@Param("ime") String ime, @Param("prezime") String prezime, @Param("tip") String tip, @Param("grupa") String grupa);
+
+    @Query("SELECT m FROM Machine m WHERE LOWER(m.name) LIKE CONCAT('%',LOWER(:name),'%') OR m.status IN :status OR m.createdAt >= :dateFrom OR m.createdAt < :dateTo")
+    List<Machine> search(@Param("name") String name, @Param("status") List<String> status, @Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo);
 }

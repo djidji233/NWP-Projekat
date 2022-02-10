@@ -10,7 +10,9 @@ import raf.edu.rs.projekat.model.User;
 import raf.edu.rs.projekat.repository.MachineRepository;
 import raf.edu.rs.projekat.repository.UserRepository;
 
-import java.util.Date;
+import java.sql.Date;
+import java.util.Calendar;
+
 
 @Component
 public class BootstrapData implements CommandLineRunner {
@@ -54,8 +56,8 @@ public class BootstrapData implements CommandLineRunner {
         Machine machine1 = new Machine();
         machine1.setName("machine1");
         machine1.setActive(true);
-        machine1.setCreatedAt(new Date());
-        machine1.setStatus(MachineStatus.RUNNING);
+        machine1.setCreatedAt(new Date(Calendar.getInstance().getTimeInMillis()));
+        machine1.setStatus(MachineStatus.STOPPED);
         machine1.setCreatedBy(user1);
         machineRepository.save(machine1);
 
