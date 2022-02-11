@@ -1,0 +1,44 @@
+
+<div class="col-sm-4">
+  <h1>Users</h1>
+
+  <table>
+    <tr>
+      <th>First name</th>
+      <th>Last name</th>
+      <th>Username</th>
+      <th>Create user</th>
+      <th>Read user</th>
+      <th>Update user</th>
+      <th>Delete user</th>
+      <th>Start machine</th>
+      <th>Stop machine</th>
+      <th>Restart machine</th>
+      <th>Create machine</th>
+      <th>Destroy machine</th>
+      <th>Search machine</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+    <tr *ngFor="let user of users">
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+      <td>{{user.username}}</td>
+      <td>{{user.can_create_users}}</td>
+      <td>{{user.can_read_users}}</td>
+      <td>{{user.can_update_users}}</td>
+      <td>{{user.can_delete_users}}</td>
+      <td>{{user.can_start_machines}}</td>
+      <td>{{user.can_stop_machines}}</td>
+      <td>{{user.can_restart_machines}}</td>
+      <td>{{user.can_create_machines}}</td>
+      <td>{{user.can_destroy_machines}}</td>
+      <td>{{user.can_search_machines}}</td>
+      <!-- rounterLink uzima za vrednost niz, prvi parametar u nizu je string,
+          drugi je number i bice konkatenirani da bi se dobio url -->
+      <td><input type="button" [routerLink]="['/users/edit',user.id]" value="Edit"></td>
+      <td><input type="button" (submit)="deleteUser(user.id)" value="Delete"></td>
+    </tr>
+  </table>
+</div>
+

@@ -1,0 +1,28 @@
+<div>
+  <h3>Add User</h3>
+
+  <div>
+    <form (submit)="editUser(id,firstName,lastName,username,can_create_users,can_read_users,can_update_users,can_delete_users,can_search_machines,can_start_machines,can_stop_machines,can_restart_machines,can_create_machines,can_destroy_machines)" class="mb-5">
+      <div class="form-group mb-2">
+        <label for="firstName">id</label>
+        <input type="text" contenteditable="false" class="form-control" id="userId" name="userId" placeholder="userId" [(ngModel)]="id">
+        <label for="firstName">Name</label>
+        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="firstName" [(ngModel)]="firstName">
+        <label for="lastName">Last name</label>
+        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="lastName" [(ngModel)]="lastName">
+        <input type="checkbox" id="can_create_users" name="can_create_users" [(ngModel)]="can_create_users"><label>can_create_users</label><br>
+        <input type="checkbox" id="can_read_users" name="can_read_users" [(ngModel)]="can_read_users"><label>can_read_users</label><br>
+        <input type="checkbox" id="can_update_users" name="can_update_users" [(ngModel)]="can_update_users"><label>can_update_users</label><br>
+        <input type="checkbox" id="can_delete_users" name="can_delete_users" [(ngModel)]="can_delete_users"><label>can_delete_users</label><br>
+        <input type="checkbox" id="can_start_machines" name="can_start_machines" [(ngModel)]="can_start_machines"><label>can_start_machines</label><br>
+        <input type="checkbox" id="can_stop_machines" name="can_stop_machines" [(ngModel)]="can_stop_machines"><label>can_stop_machines</label><br>
+        <input type="checkbox" id="can_restart_machines" name="can_restart_machines" [(ngModel)]="can_restart_machines"><label>can_restart_machines</label><br>
+        <input type="checkbox" id="can_search_machines" name="can_search_machines" [(ngModel)]="can_search_machines"><label>can_search_machines</label><br>
+        <input type="checkbox" id="can_create_machines" name="can_create_machines" [(ngModel)]="can_create_machines"><label>can_create_machines</label><br>
+        <input type="checkbox" id="can_destroy_machines" name="can_destroy_machines" [(ngModel)]="can_destroy_machines"><label>can_destroy_machines</label><br>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
