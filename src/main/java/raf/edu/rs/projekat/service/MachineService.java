@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 @Service
@@ -63,7 +65,7 @@ public class MachineService implements IService<Machine, Long> {
 
     // START
     //@Scheduled(fixedDelay = 11000)
-    //@Async
+    @Async
     public MachineStatus startMachine(Long machineId, String jwt) throws InterruptedException, UnsupportedEncodingException {
         logger.info("START MACHINE...");
         token = DecodedToken.getDecoded(jwt);
@@ -89,6 +91,7 @@ public class MachineService implements IService<Machine, Long> {
 
     // STOP
     //@Scheduled(fixedDelay = 11000)
+    @Async
     public MachineStatus stopMachine(Long machineId, String jwt) throws InterruptedException, UnsupportedEncodingException {
         logger.info("STOP MACHINE...");
         token = DecodedToken.getDecoded(jwt);
@@ -114,6 +117,7 @@ public class MachineService implements IService<Machine, Long> {
 
     // RESTART
     //@Scheduled(fixedDelay = 11000)
+    @Async
     public MachineStatus restartMachine(Long machineId, String jwt) throws InterruptedException, UnsupportedEncodingException {
         logger.info("RESTART MACHINE...");
         token = DecodedToken.getDecoded(jwt);
