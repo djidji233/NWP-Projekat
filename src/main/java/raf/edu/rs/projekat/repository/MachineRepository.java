@@ -17,5 +17,5 @@ public interface MachineRepository  extends JpaRepository<Machine, Long> {
 //    List<User> searchUsers(@Param("ime") String ime, @Param("prezime") String prezime, @Param("tip") String tip, @Param("grupa") String grupa);
 
     @Query("SELECT m FROM Machine m WHERE LOWER(m.name) LIKE CONCAT('%',LOWER(:name),'%') OR m.status IN :status OR m.createdAt >= :dateFrom OR m.createdAt < :dateTo")
-    List<Machine> search(@Param("name") String name, @Param("status") List<String> status, @Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo);
+    List<Machine> search(@Param("name") String name, @Param("status") List<MachineStatus> status, @Param("dateFrom") Date dateFrom, @Param("dateTo") Date dateTo);
 }

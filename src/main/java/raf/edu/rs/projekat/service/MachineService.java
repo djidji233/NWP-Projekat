@@ -20,25 +20,34 @@ import raf.edu.rs.projekat.repository.UserRepository;
 import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 @Service
 public class MachineService implements IService<Machine, Long> {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Logger logger;
     private final MachineRepository machineRepository;
     private final UserRepository userRepository;
     private DecodedToken token;
+    private Semaphore lock;
 
     @Autowired
     public MachineService(MachineRepository machineRepository, UserRepository userRepository) {
+        this.logger= Logger.getLogger(this.getClass().getName());
         this.machineRepository = machineRepository;
         this.userRepository = userRepository;
         this.token = null;
+        this.lock = new Semaphore(1);
     }
 
 
@@ -68,25 +77,31 @@ public class MachineService implements IService<Machine, Long> {
     @Async
     public MachineStatus startMachine(Long machineId, String jwt) throws InterruptedException, UnsupportedEncodingException {
         logger.info("START MACHINE...");
-        token = DecodedToken.getDecoded(jwt);
-        if (token.can_start_machines) {
-            if (findById(machineId,jwt).isPresent()) {
-                Machine machine = findById(machineId,jwt).get();
-                if (machine.getStatus().equals(MachineStatus.STOPPED)) {
-                    Thread.sleep(10000);
-                    machine.setStatus(MachineStatus.RUNNING);
-                    machineRepository.save(machine);
-                    logger.info("STATUS CHANGED TO: " + machine.getStatus());
-                    return machine.getStatus();
+        try {
+            lock.acquire();
+            token = DecodedToken.getDecoded(jwt);
+            if (token.can_start_machines) {
+                if (findById(machineId, jwt).isPresent()) {
+                    Machine machine = findById(machineId, jwt).get();
+                    if (machine.getStatus().equals(MachineStatus.STOPPED)) {
+                        Thread.sleep(10000);
+                        machine.setStatus(MachineStatus.RUNNING);
+                        machineRepository.save(machine);
+                        logger.info("STATUS CHANGED TO: " + machine.getStatus());
+                        return machine.getStatus();
+                    } else {
+                        throw new ApiException(HttpStatus.BAD_REQUEST, "machine status must be STOPPED", null);
+                    }
                 } else {
-                    throw new ApiException(HttpStatus.BAD_REQUEST, "machine status must be STOPPED", null);
+                    throw new ApiException(HttpStatus.BAD_REQUEST, "machine with that id doesn't exist", null);
                 }
             } else {
-                throw new ApiException(HttpStatus.BAD_REQUEST, "machine with that id doesn't exist", null);
+                throw new ApiException(HttpStatus.FORBIDDEN, "can_start_machines privilege missing", null);
             }
-        } else {
-            throw new ApiException(HttpStatus.FORBIDDEN, "can_start_machines privilege missing", null);
+        } finally {
+            lock.release();
         }
+
     }
 
     // STOP
@@ -94,24 +109,29 @@ public class MachineService implements IService<Machine, Long> {
     @Async
     public MachineStatus stopMachine(Long machineId, String jwt) throws InterruptedException, UnsupportedEncodingException {
         logger.info("STOP MACHINE...");
-        token = DecodedToken.getDecoded(jwt);
-        if (token.can_stop_machines) {
-            if (findById(machineId,jwt).isPresent()) {
-                Machine machine = findById(machineId,jwt).get();
-                if (machine.getStatus().equals(MachineStatus.RUNNING)) {
-                    Thread.sleep(10000);
-                    machine.setStatus(MachineStatus.STOPPED);
-                    machineRepository.save(machine);
-                    logger.info("STATUS CHANGED TO: " + machine.getStatus());
-                    return machine.getStatus();
+        try {
+            lock.acquire();
+            token = DecodedToken.getDecoded(jwt);
+            if (token.can_stop_machines) {
+                if (findById(machineId, jwt).isPresent()) {
+                    Machine machine = findById(machineId, jwt).get();
+                    if (machine.getStatus().equals(MachineStatus.RUNNING)) {
+                        Thread.sleep(10000);
+                        machine.setStatus(MachineStatus.STOPPED);
+                        machineRepository.save(machine);
+                        logger.info("STATUS CHANGED TO: " + machine.getStatus());
+                        return machine.getStatus();
+                    } else {
+                        throw new ApiException(HttpStatus.BAD_REQUEST, "machine status must be RUNNING", null);
+                    }
                 } else {
-                    throw new ApiException(HttpStatus.BAD_REQUEST, "machine status must be RUNNING", null);
+                    throw new ApiException(HttpStatus.BAD_REQUEST, "machine with that id doesn't exist", null);
                 }
             } else {
-                throw new ApiException(HttpStatus.BAD_REQUEST, "machine with that id doesn't exist", null);
+                throw new ApiException(HttpStatus.FORBIDDEN, "can_stop_machines privilege missing", null);
             }
-        } else {
-            throw new ApiException(HttpStatus.FORBIDDEN, "can_stop_machines privilege missing", null);
+        } finally {
+            lock.release();
         }
     }
 
@@ -120,26 +140,31 @@ public class MachineService implements IService<Machine, Long> {
     @Async
     public MachineStatus restartMachine(Long machineId, String jwt) throws InterruptedException, UnsupportedEncodingException {
         logger.info("RESTART MACHINE...");
-        token = DecodedToken.getDecoded(jwt);
-        if (token.can_restart_machines) {
-            if (findById(machineId,jwt).isPresent()) {
-                Machine machine = findById(machineId,jwt).get();
-                if (machine.getStatus().equals(MachineStatus.RUNNING)) {
-                    Thread.sleep(5000);
-                    machine.setStatus(MachineStatus.STOPPED);
-                    logger.info("STATUS CHANGED TO: " + machine.getStatus());
-                    Thread.sleep(5000);
-                    machine.setStatus(MachineStatus.RUNNING);
-                    logger.info("STATUS CHANGED TO: " + machine.getStatus());
-                    return machine.getStatus();
+        try {
+            lock.acquire();
+            token = DecodedToken.getDecoded(jwt);
+            if (token.can_restart_machines) {
+                if (findById(machineId, jwt).isPresent()) {
+                    Machine machine = findById(machineId, jwt).get();
+                    if (machine.getStatus().equals(MachineStatus.RUNNING)) {
+                        Thread.sleep(5000);
+                        machine.setStatus(MachineStatus.STOPPED);
+                        logger.info("STATUS CHANGED TO: " + machine.getStatus());
+                        Thread.sleep(5000);
+                        machine.setStatus(MachineStatus.RUNNING);
+                        logger.info("STATUS CHANGED TO: " + machine.getStatus());
+                        return machine.getStatus();
+                    } else {
+                        throw new ApiException(HttpStatus.BAD_REQUEST, "machine status must be RUNNING", null);
+                    }
                 } else {
-                    throw new ApiException(HttpStatus.BAD_REQUEST, "machine status must be RUNNING", null);
+                    throw new ApiException(HttpStatus.BAD_REQUEST, "machine with that id doesn't exist", null);
                 }
             } else {
-                throw new ApiException(HttpStatus.BAD_REQUEST, "machine with that id doesn't exist", null);
+                throw new ApiException(HttpStatus.FORBIDDEN, "can_restart_machines privilege missing", null);
             }
-        } else {
-            throw new ApiException(HttpStatus.FORBIDDEN, "can_restart_machines privilege missing", null);
+        } finally {
+            lock.release();
         }
 
     }
@@ -200,7 +225,18 @@ public class MachineService implements IService<Machine, Long> {
             if (name == null && status == null && dateFrom == null && dateTo == null){
                 return machineRepository.findAll();
             } else {
-                return machineRepository.search(name, status, dateFrom, dateTo);
+                List<MachineStatus> statusEnum = new ArrayList<>();
+                if(status != null) {
+                    for (String s : status) {
+                        if (s.equalsIgnoreCase("STOPPED")) {
+                            statusEnum.add(MachineStatus.STOPPED);
+                        }
+                        if (s.equalsIgnoreCase("RUNNING")) {
+                            statusEnum.add(MachineStatus.RUNNING);
+                        }
+                    }
+                }
+                return machineRepository.search(name, statusEnum, dateFrom, dateTo);
             }
         } else {
             throw new ApiException(HttpStatus.FORBIDDEN, "can_search_machines privilege missing", null);
