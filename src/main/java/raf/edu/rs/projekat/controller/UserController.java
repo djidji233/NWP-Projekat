@@ -10,6 +10,7 @@ import raf.edu.rs.projekat.model.User;
 import raf.edu.rs.projekat.service.UserService;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,13 +28,13 @@ public class UserController {
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> getAllUsers() {
-        return userService.findAll();
+    public List<User> getAllUsers(@RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException {
+        return userService.findAll(token);
     }
 
     @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId) {
-        Optional<User> optionalUser = userService.findById(userId);
+    public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId,@RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException {
+        Optional<User> optionalUser = userService.findById(userId,token);
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok(optionalUser.get());
         } else {
@@ -43,19 +44,19 @@ public class UserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public User createUser(@RequestBody User user) {
-        return userService.create(user);
+    public User createUser(@RequestBody User user,@RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException {
+        return userService.create(user,token);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public User updateUser(@RequestBody User user) {
-        return userService.save(user);
+    public User updateUser(@RequestBody User user,@RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException{
+        return userService.update(user,token);
     }
 
     @DeleteMapping(value = "/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable("userId") Long id){
-        userService.deleteById(id);
+    public ResponseEntity<?> deleteUser(@PathVariable("userId") Long id,@RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException {
+        userService.deleteById(id,token);
         return ResponseEntity.ok().build();
     }
 

@@ -29,13 +29,13 @@ public class MachineController {
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Machine> getAllMachines() {
-        return machineService.findAll();
+    public List<Machine> getAllMachines(@RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException{
+        return machineService.findAll(token);
     }
 
     @GetMapping(value = "/{machineId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getMachineById(@PathVariable("machineId") Long machineId) {
-        Optional<Machine> optionalMachine = machineService.findById(machineId);
+    public ResponseEntity<?> getMachineById(@PathVariable("machineId") Long machineId,@RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException {
+        Optional<Machine> optionalMachine = machineService.findById(machineId,token);
         if (optionalMachine.isPresent()) {
             return ResponseEntity.ok(optionalMachine.get());
         } else {

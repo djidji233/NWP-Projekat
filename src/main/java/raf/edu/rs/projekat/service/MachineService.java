@@ -32,34 +32,34 @@ public class MachineService implements IService<Machine, Long> {
     private Logger logger = Logger.getLogger(this.getClass().getName());
     private final MachineRepository machineRepository;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private DecodedToken token;
 
     @Autowired
-    public MachineService(MachineRepository machineRepository, PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public MachineService(MachineRepository machineRepository, UserRepository userRepository) {
         this.machineRepository = machineRepository;
-        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.token = null;
     }
 
+
+
     @Override
-    public <S extends Machine> S save(S var1) {
+    public <S extends Machine> S save(S var1, String jwt) {
         return machineRepository.save(var1);
     }
 
     @Override
-    public Optional<Machine> findById(Long var1) {
+    public Optional<Machine> findById(Long var1, String jwt){
         return machineRepository.findById(var1);
     }
 
     @Override
-    public List<Machine> findAll() {
+    public List<Machine> findAll(String jwt) {
         return machineRepository.findAll();
     }
 
     @Override
-    public void deleteById(Long var1) {
+    public void deleteById(Long var1, String jwt) {
         machineRepository.deleteById(var1);
     }
 
@@ -70,8 +70,8 @@ public class MachineService implements IService<Machine, Long> {
         logger.info("START MACHINE...");
         token = DecodedToken.getDecoded(jwt);
         if (token.can_start_machines) {
-            if (findById(machineId).isPresent()) {
-                Machine machine = findById(machineId).get();
+            if (findById(machineId,jwt).isPresent()) {
+                Machine machine = findById(machineId,jwt).get();
                 if (machine.getStatus().equals(MachineStatus.STOPPED)) {
                     Thread.sleep(10000);
                     machine.setStatus(MachineStatus.RUNNING);
@@ -96,8 +96,8 @@ public class MachineService implements IService<Machine, Long> {
         logger.info("STOP MACHINE...");
         token = DecodedToken.getDecoded(jwt);
         if (token.can_stop_machines) {
-            if (findById(machineId).isPresent()) {
-                Machine machine = findById(machineId).get();
+            if (findById(machineId,jwt).isPresent()) {
+                Machine machine = findById(machineId,jwt).get();
                 if (machine.getStatus().equals(MachineStatus.RUNNING)) {
                     Thread.sleep(10000);
                     machine.setStatus(MachineStatus.STOPPED);
@@ -122,8 +122,8 @@ public class MachineService implements IService<Machine, Long> {
         logger.info("RESTART MACHINE...");
         token = DecodedToken.getDecoded(jwt);
         if (token.can_restart_machines) {
-            if (findById(machineId).isPresent()) {
-                Machine machine = findById(machineId).get();
+            if (findById(machineId,jwt).isPresent()) {
+                Machine machine = findById(machineId,jwt).get();
                 if (machine.getStatus().equals(MachineStatus.RUNNING)) {
                     Thread.sleep(5000);
                     machine.setStatus(MachineStatus.STOPPED);
@@ -157,6 +157,11 @@ public class MachineService implements IService<Machine, Long> {
             User u = userRepository.findByUsername(token.sub);
             machine.setCreatedBy(u);
             machineRepository.save(machine);
+            // treba dodati i masinu u userove masine ? testirati
+//            if(!u.getMachines().contains(machine)){
+//
+//                u.setMachines(u.getMachines().add(machine));
+//            }
             logger.info("MACHINE CREATED");
             return machine;
         } else {
@@ -169,8 +174,8 @@ public class MachineService implements IService<Machine, Long> {
         logger.info("DESTROY MACHINE...");
         token = DecodedToken.getDecoded(jwt);
         if (token.can_destroy_machines) {
-            if (findById(machineId).isPresent()) {
-                Machine machine = findById(machineId).get();
+            if (findById(machineId,jwt).isPresent()) {
+                Machine machine = findById(machineId,jwt).get();
                 if (machine.getStatus().equals(MachineStatus.STOPPED)) {
                     machine.setActive(false); // soft delete
                     machineRepository.save(machine);
@@ -188,13 +193,19 @@ public class MachineService implements IService<Machine, Long> {
 
 
     // SEARCH
-    public List<Machine> searchMachines(String name, List<String> status, Date dateFrom, Date dateTo, String jwt) {
+    public List<Machine> searchMachines(String name, List<String> status, Date dateFrom, Date dateTo, String jwt) throws UnsupportedEncodingException {
         logger.info("SEARCH MACHINES...");
-        if (name == null && status == null && dateFrom == null && dateTo == null){
-            return machineRepository.findAll();
+        token = DecodedToken.getDecoded(jwt);
+        if(token.can_search_machines){
+            if (name == null && status == null && dateFrom == null && dateTo == null){
+                return machineRepository.findAll();
+            } else {
+                return machineRepository.search(name, status, dateFrom, dateTo);
+            }
         } else {
-            return machineRepository.search(name, status, dateFrom, dateTo);
+            throw new ApiException(HttpStatus.FORBIDDEN, "can_search_machines privilege missing", null);
         }
+
     }
 
 
