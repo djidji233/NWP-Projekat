@@ -10,6 +10,8 @@ import raf.edu.rs.projekat.responses.LoginResponse;
 import raf.edu.rs.projekat.service.UserService;
 import raf.edu.rs.projekat.util.JwtUtil;
 
+import java.util.logging.Logger;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/auth")
@@ -18,11 +20,13 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final Logger logger;
 
     public AuthController(AuthenticationManager authenticationManager, UserService userService, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.logger = Logger.getLogger(this.getClass().getName());;
     }
 
     @PostMapping("/login")
@@ -35,6 +39,7 @@ public class AuthController {
         }
         //this.userService.loggedIn(loginRequest.getUsername());
         User u = userService.findByUsername(loginRequest.getUsername());
+        logger.info("LOGGED IN!");
 
         return ResponseEntity.ok(new LoginResponse(jwtUtil.generateToken(loginRequest.getUsername(),u.getCan_create_users(),u.getCan_read_users(), u.getCan_update_users(), u.getCan_delete_users(), u.getCan_search_machines(), u.getCan_start_machines(), u.getCan_stop_machines(), u.getCan_restart_machines(), u.getCan_create_machines(), u.getCan_destroy_machines())));
     }

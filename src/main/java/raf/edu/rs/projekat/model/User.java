@@ -1,5 +1,6 @@
 package raf.edu.rs.projekat.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -68,6 +69,7 @@ public class User {
 
     @OneToMany(mappedBy = "createdBy",
                 cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Machine> machines;
 
 }

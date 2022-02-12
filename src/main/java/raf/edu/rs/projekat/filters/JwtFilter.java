@@ -54,5 +54,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
         // rucno dodavanje nekih stvari, npr za onaj CORS
+        //httpServletResponse.addHeader("Access-Control-Allow-Origin","*");
     }
 }

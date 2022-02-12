@@ -26,7 +26,7 @@ public class Machine {
 
     @ManyToOne
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
-    @JsonIgnore
+    //@JsonIgnore
     private User createdBy; // referenca na korisnika koji je napravio ovu masinu
 
     @Column
