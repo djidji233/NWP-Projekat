@@ -41,16 +41,16 @@ public class BootstrapData implements CommandLineRunner {
         user1.setLastName("Admirovic");
         user1.setUsername("admin");
         user1.setPassword(this.passwordEncoder.encode("admin"));
-        user1.setCAN_CREATE_USERS(true);
-        user1.setCAN_READ_USERS(true);
-        user1.setCAN_UPDATE_USERS(true);
-        user1.setCAN_DELETE_USERS(true);
-        user1.setCAN_SEARCH_MACHINES(true);
-        user1.setCAN_START_MACHINES(true);
-        user1.setCAN_STOP_MACHINES(true);
-        user1.setCAN_RESTART_MACHINES(true);
-        user1.setCAN_CREATE_MACHINES(true);
-        user1.setCAN_DESTROY_MACHINES(true);
+        user1.setCan_create_users(true);
+        user1.setCan_read_users(true);
+        user1.setCan_update_users(true);
+        user1.setCan_delete_users(true);
+        user1.setCan_search_machines(true);
+        user1.setCan_start_machines(true);
+        user1.setCan_stop_machines(true);
+        user1.setCan_restart_machines(true);
+        user1.setCan_create_machines(true);
+        user1.setCan_destroy_machines(true);
         this.userRepository.save(user1);
 
         Machine machine1 = new Machine();

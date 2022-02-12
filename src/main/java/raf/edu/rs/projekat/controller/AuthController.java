@@ -36,7 +36,7 @@ public class AuthController {
         //this.userService.loggedIn(loginRequest.getUsername());
         User u = userService.findByUsername(loginRequest.getUsername());
 
-        return ResponseEntity.ok(new LoginResponse(jwtUtil.generateToken(loginRequest.getUsername(),u.getCAN_CREATE_USERS(),u.getCAN_READ_USERS(), u.getCAN_UPDATE_USERS(), u.getCAN_DELETE_USERS(), u.getCAN_SEARCH_MACHINES(), u.getCAN_START_MACHINES(), u.getCAN_STOP_MACHINES(), u.getCAN_RESTART_MACHINES(), u.getCAN_CREATE_MACHINES(), u.getCAN_DESTROY_MACHINES())));
+        return ResponseEntity.ok(new LoginResponse(jwtUtil.generateToken(loginRequest.getUsername(),u.getCan_create_users(),u.getCan_read_users(), u.getCan_update_users(), u.getCan_delete_users(), u.getCan_search_machines(), u.getCan_start_machines(), u.getCan_stop_machines(), u.getCan_restart_machines(), u.getCan_create_machines(), u.getCan_destroy_machines())));
     }
 
 }

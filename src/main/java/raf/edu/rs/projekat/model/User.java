@@ -36,35 +36,35 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @Column(name = "CAN_READ_USERS")
-    private Boolean CAN_READ_USERS;
+    @Column
+    private Boolean can_read_users;
 
-    @Column(name = "CAN_CREATE_USERS")
-    private Boolean CAN_CREATE_USERS;
+    @Column
+    private Boolean can_create_users;
 
-    @Column(name = "CAN_UPDATE_USERS")
-    private Boolean CAN_UPDATE_USERS;
+    @Column
+    private Boolean can_update_users;
 
-    @Column(name = "CAN_DELETE_USERS")
-    private Boolean CAN_DELETE_USERS;
+    @Column
+    private Boolean can_delete_users;
 
-    @Column(name = "CAN_SEARCH_MACHINES")
-    private Boolean CAN_SEARCH_MACHINES;
+    @Column
+    private Boolean can_search_machines;
 
-    @Column(name = "CAN_START_MACHINES")
-    private Boolean CAN_START_MACHINES;
+    @Column
+    private Boolean can_start_machines;
 
-    @Column(name = "CAN_STOP_MACHINES")
-    private Boolean CAN_STOP_MACHINES;
+    @Column
+    private Boolean can_stop_machines;
 
-    @Column(name = "CAN_RESTART_MACHINES")
-    private Boolean CAN_RESTART_MACHINES;
+    @Column
+    private Boolean can_restart_machines;
 
-    @Column(name = "CAN_CREATE_MACHINES")
-    private Boolean CAN_CREATE_MACHINES;
+    @Column
+    private Boolean can_create_machines;
 
-    @Column(name = "CAN_DESTROY_MACHINES")
-    private Boolean CAN_DESTROY_MACHINES;
+    @Column
+    private Boolean can_destroy_machines;
 
     @OneToMany(mappedBy = "createdBy",
                 cascade = CascadeType.ALL)
