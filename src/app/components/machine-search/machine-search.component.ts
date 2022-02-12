@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {UserService} from "../../services/user/user.service";
 import {ActivatedRoute} from "@angular/router";
 import {MachineService} from "../../services/machine/machine.service";
-import {Machine} from "../../model";
+import {DecodedJWT, Machine} from "../../model";
 import {LoginService} from "../../services/login.service";
 
 @Component({
@@ -17,7 +17,7 @@ export class MachineSearchComponent implements OnInit {
   dateFrom:string
   dateTo:string
   machines: Machine[]
-  loggedUser:string;
+  loggedUser:DecodedJWT;
 
   constructor(private machineService: MachineService, private loginService:LoginService,private activatedRoute: ActivatedRoute) {
     this.machineName=''
@@ -25,7 +25,7 @@ export class MachineSearchComponent implements OnInit {
     this.dateFrom=''
     this.dateTo=''
     this.machines=[]
-    this.loggedUser = loginService.getPrivileges().sub
+    this.loggedUser = loginService.getPrivileges()
   }
 
   ngOnInit(): void {
@@ -40,6 +40,10 @@ export class MachineSearchComponent implements OnInit {
   }
 
   search(machineName:string, status:string, dateFrom:string, dateTo:string){
+
+  }
+
+  destroyMachine(machineId:number){
 
   }
 

@@ -23,6 +23,7 @@ export class LoginService implements OnDestroy {
         can_start_machines: false,
         can_stop_machines: false,
         can_update_users: false,
+        can_destroy_machines:false,
         exp: 9999999999,
         iat: 9999999999,
         sub: 'init'

@@ -14,7 +14,8 @@ export interface DecodedJWT {
   exp: number,
   iat: number,
   can_create_users: boolean,
-  can_create_machines: boolean
+  can_create_machines: boolean,
+  can_destroy_machines:boolean
 }
 
 export enum MachineStatus {

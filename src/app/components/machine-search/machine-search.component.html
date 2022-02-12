@@ -36,12 +36,13 @@
 
     <tr *ngFor="let machine of machines">
       <ng-container *ngIf="machine.active">
-        <ng-container *ngIf="machine.createdBy.username==loggedUser">
+        <ng-container *ngIf="machine.createdBy.username==loggedUser.sub">
           <td>{{machine.machineId}}</td>
           <td>{{machine.name}}</td>
           <td>{{machine.status}}</td>
           <td>{{machine.createdBy.username}}</td>
           <td>{{machine.createdAt}}</td>
+          <td *ngIf="loggedUser.can_destroy_machines"><input type="button" (submit)="destroyMachine(machine.machineId)" value="Delete"></td>
         </ng-container>
       </ng-container>
     </tr>
