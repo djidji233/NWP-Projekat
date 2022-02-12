@@ -47,6 +47,10 @@ export class UserAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(!this.loggedUser.can_create_users){
+      window.alert("you dont have the privilege required!")
+      this.router.navigate(['/'])
+    }
   }
 
   addUser(firstName: string,

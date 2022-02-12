@@ -16,13 +16,19 @@ export class UserListComponent implements OnInit {
   loggedUser: DecodedJWT;
 
   // Pomocu parametra u konstruktoru injektujemo UserService instancu u UserListComponent
-  constructor(private userService: UserService, private loginService: LoginService) {
+  constructor(private userService: UserService, private loginService: LoginService, private router:Router) {
     this.users = [];
     this.loggedUser = loginService.getPrivileges()
   }
 
   ngOnInit(): void {
-    this.fetch();
+    if(this.loggedUser.can_read_users){
+      this.fetch();
+    } else {
+      window.alert("you dont have the privilege!")
+      this.router.navigate(['/']);
+    }
+
   }
 
   fetch() {

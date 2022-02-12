@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {UserService} from "../../services/user/user.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MachineService} from "../../services/machine/machine.service";
 import {DecodedJWT, Machine} from "../../model";
 import {LoginService} from "../../services/login.service";
@@ -19,7 +19,7 @@ export class MachineSearchComponent implements OnInit {
   machines: Machine[]
   loggedUser:DecodedJWT;
 
-  constructor(private machineService: MachineService, private loginService:LoginService,private activatedRoute: ActivatedRoute) {
+  constructor(private machineService: MachineService,private router:Router, private loginService:LoginService,private activatedRoute: ActivatedRoute) {
     this.machineName=''
     this.status=''
     this.dateFrom=''
@@ -29,7 +29,12 @@ export class MachineSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetch();
+    if(this.loggedUser.can_search_machines){
+      this.fetch();
+    } else {
+      window.alert("you dont have the privilege!")
+      this.router.navigate(['/']);
+    }
   }
 
   fetch() {

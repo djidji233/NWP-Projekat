@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../services/user/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {User} from "../../model";
+import {DecodedJWT, User} from "../../model";
+import {LoginService} from "../../services/login.service";
 
 @Component({
   selector: 'app-user-edit',
@@ -25,8 +26,10 @@ export class UserEditComponent implements OnInit {
   public can_create_machines: boolean
   public can_destroy_machines: boolean
 
+  loggedUser: DecodedJWT
 
-  constructor(private userService: UserService, private activatedRoute: ActivatedRoute, private router: Router) {
+
+  constructor(private userService: UserService, private loginService: LoginService, private activatedRoute: ActivatedRoute, private router: Router) {
     this.id = 0;
     this.firstName = '';
     this.lastName = '';
@@ -46,29 +49,34 @@ export class UserEditComponent implements OnInit {
       this.id = Number(params.get('id'));
       console.log(this.id);
     })
+
+    this.loggedUser = loginService.getPrivileges()
   }
 
   ngOnInit(): void {
+    if (!this.loggedUser.can_update_users) {
+      window.alert("you dont have the privilege required!")
+      this.router.navigate(['/'])
+    } else {
 
-
-    this.userService.fetchUsers().subscribe((users: User[]) => {
-      console.log(users);
-      let user = users.filter(user => user.userId === this.id)[0];
-      this.firstName = user.firstName
-      this.lastName = user.lastName
-      this.username = user.username;
-      this.can_create_users = user.can_create_users
-      this.can_read_users = user.can_read_users
-      this.can_update_users = user.can_update_users
-      this.can_delete_users = user.can_delete_users
-      this.can_search_machines = user.can_search_machines
-      this.can_start_machines = user.can_start_machines
-      this.can_stop_machines = user.can_stop_machines
-      this.can_restart_machines = user.can_restart_machines
-      this.can_create_machines = user.can_create_machines
-      this.can_destroy_machines = user.can_destroy_machines
-    });
-
+      this.userService.fetchUsers().subscribe((users: User[]) => {
+        console.log(users);
+        let user = users.filter(user => user.userId === this.id)[0];
+        this.firstName = user.firstName
+        this.lastName = user.lastName
+        this.username = user.username;
+        this.can_create_users = user.can_create_users
+        this.can_read_users = user.can_read_users
+        this.can_update_users = user.can_update_users
+        this.can_delete_users = user.can_delete_users
+        this.can_search_machines = user.can_search_machines
+        this.can_start_machines = user.can_start_machines
+        this.can_stop_machines = user.can_stop_machines
+        this.can_restart_machines = user.can_restart_machines
+        this.can_create_machines = user.can_create_machines
+        this.can_destroy_machines = user.can_destroy_machines
+      });
+    }
 
   }
 

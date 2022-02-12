@@ -20,6 +20,7 @@
       <th>Edit</th>
       <th>Delete</th>
     </tr>
+    <ng-container *ngIf="loggedUser.can_read_users">
     <tr *ngFor="let user of users">
       <td>{{user.firstName}}</td>
       <td>{{user.lastName}}</td>
@@ -39,6 +40,7 @@
       <td  *ngIf="loggedUser.can_update_users"><input type="button" [routerLink]="['/users/edit',user.userId]" value="Edit"></td>
       <td  *ngIf="loggedUser.can_delete_users"><input type="button" (click)="deleteUser(user.userId)" value="Delete"></td>
     </tr>
+    </ng-container>
   </table>
 </div>
 
