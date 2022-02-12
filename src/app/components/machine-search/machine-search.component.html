@@ -42,7 +42,10 @@
           <td>{{machine.status}}</td>
           <td>{{machine.createdBy.username}}</td>
           <td>{{machine.createdAt}}</td>
-          <td *ngIf="loggedUser.can_destroy_machines"><input type="button" (submit)="destroyMachine(machine.machineId)" value="Delete"></td>
+          <td *ngIf="loggedUser.can_start_machines"><input type="button" (click)="startMachine(machine.machineId)" value="Start"></td>
+          <td *ngIf="loggedUser.can_stop_machines"><input type="button" (click)="stopMachine(machine.machineId)" value="Stop"></td>
+          <td *ngIf="loggedUser.can_restart_machines"><input type="button" (click)="restartMachine(machine.machineId)" value="Restart"></td>
+          <td *ngIf="loggedUser.can_destroy_machines"><input type="button" (click)="destroyMachine(machine.machineId)" value="Delete"></td>
         </ng-container>
       </ng-container>
     </tr>

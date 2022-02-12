@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
-import {Machine} from "../../model";
+import {Machine, MachineStatus} from "../../model";
 import {HttpClient} from "@angular/common/http";
 
 @Injectable({
@@ -33,6 +33,50 @@ export class MachineService {
     return this.http.post<Machine>(this.machinesUrl + '/create', {},{
       params: {
         machineName: machineName
+      }, headers: {
+        Authorization: this.authorization,
+        //'Access-Control-Allow-Origin':'*'
+      }
+    })
+  }
+
+  public startMachine(machineId:number) : Observable<MachineStatus> {
+    return this.http.put<MachineStatus>(this.machinesUrl + '/start', {},{
+      params: {
+        machineId: machineId
+      }, headers: {
+        Authorization: this.authorization,
+        //'Access-Control-Allow-Origin':'*'
+      }
+    })
+  }
+
+  public stopMachine(machineId:number) : Observable<MachineStatus> {
+    return this.http.put<MachineStatus>(this.machinesUrl + '/stop', {},{
+      params: {
+        machineId: machineId
+      }, headers: {
+        Authorization: this.authorization,
+        //'Access-Control-Allow-Origin':'*'
+      }
+    })
+  }
+
+  public restartMachine(machineId:number) : Observable<MachineStatus> {
+    return this.http.put<MachineStatus>(this.machinesUrl + '/restart', {},{
+      params: {
+        machineId: machineId
+      }, headers: {
+        Authorization: this.authorization,
+        //'Access-Control-Allow-Origin':'*'
+      }
+    })
+  }
+
+  public destroyMachine(machineId:number) {
+    return this.http.put(this.machinesUrl + '/destroy', {},{
+      params: {
+        machineId: machineId
       }, headers: {
         Authorization: this.authorization,
         //'Access-Control-Allow-Origin':'*'

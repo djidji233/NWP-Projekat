@@ -43,8 +43,28 @@ export class MachineSearchComponent implements OnInit {
 
   }
 
+  startMachine(machineId:number){
+    this.machineService.startMachine(machineId).subscribe(status =>{
+      console.log(status)
+      this.fetch()
+    })
+  }
+  stopMachine(machineId:number){
+    this.machineService.stopMachine(machineId).subscribe(status =>{
+      console.log(status)
+      this.fetch()
+    })
+  }
+  restartMachine(machineId:number){
+    this.machineService.restartMachine(machineId).subscribe(status =>{
+      console.log(status)
+      this.fetch()
+    })
+  }
   destroyMachine(machineId:number){
-
+    this.machineService.destroyMachine(machineId).subscribe(()=>{
+      this.fetch()
+    })
   }
 
 }
