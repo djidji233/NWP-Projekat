@@ -13,19 +13,17 @@ const routes: Routes = [
   // http://localhost:4200/
   { path: '', component: LoginComponent},
   // http://localhost:4200/users
-  { path: 'users', component: UserListComponent},//, canActivate: [AuthGuard]},
+  { path: 'users', component: UserListComponent, canActivate: [AuthGuard]},
   // http://localhost:4200/users/add
-  { path: 'users/add', component: UserAddComponent},//, canActivate: [AuthGuard]},
+  { path: 'users/add', component: UserAddComponent, canActivate: [AuthGuard]},
   // http://localhost:4200/users/edit/{id}
-  { path: 'users/edit/:id', component: UserEditComponent},//, canActivate: [AuthGuard]},
-
-
+  { path: 'users/edit/:id', component: UserEditComponent, canActivate: [AuthGuard]},
   // http://localhost:4200/machines/search
-  { path: 'machines/search', component: MachineSearchComponent},//, canActivate: [AuthGuard]},
+  { path: 'machines/search', component: MachineSearchComponent, canActivate: [AuthGuard]},
   // http://localhost:4200/machines/create
-  { path: 'machines/create', component: MachineCreateComponent},//, canActivate: [AuthGuard]},
+  { path: 'machines/create', component: MachineCreateComponent, canActivate: [AuthGuard]},
   // http://localhost:4200/machines/errors
-  { path: 'machines/errors', component: MachineErrorsComponent},//, canActivate: [AuthGuard]},
+  { path: 'machines/errors', component: MachineErrorsComponent, canActivate: [AuthGuard]},
 
 ];
 
