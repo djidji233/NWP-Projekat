@@ -43,21 +43,23 @@ export class MachineSearchComponent implements OnInit {
 
   }
 
-  startMachine(machineId:number){
-    this.machineService.startMachine(machineId).subscribe(status =>{
-      console.log(status)
+  startMachine(machineId: number) {
+    this.machineService.startMachine(machineId).subscribe(async () => {
+      await delay(12000);
       this.fetch()
     })
   }
   stopMachine(machineId:number){
-    this.machineService.stopMachine(machineId).subscribe(status =>{
-      console.log(status)
+    this.machineService.stopMachine(machineId).subscribe(async () => {
+      await delay(12000);
       this.fetch()
     })
   }
   restartMachine(machineId:number){
-    this.machineService.restartMachine(machineId).subscribe(status =>{
-      console.log(status)
+    this.machineService.restartMachine(machineId).subscribe(async () => {
+      await delay(6000);
+      this.fetch()
+      await delay(6000);
       this.fetch()
     })
   }
@@ -67,4 +69,8 @@ export class MachineSearchComponent implements OnInit {
     })
   }
 
+}
+
+async function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
 }
