@@ -3,27 +3,24 @@ package raf.edu.rs.projekat.service;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.support.CronExpression;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import raf.edu.rs.projekat.controller.ApiException;
-import raf.edu.rs.projekat.model.DecodedToken;
-import raf.edu.rs.projekat.model.Machine;
-import raf.edu.rs.projekat.model.MachineStatus;
-import raf.edu.rs.projekat.model.User;
+import raf.edu.rs.projekat.model.*;
 import raf.edu.rs.projekat.repository.MachineRepository;
 import raf.edu.rs.projekat.repository.UserRepository;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -38,18 +35,19 @@ public class MachineService implements IService<Machine, Long> {
     private Logger logger;
     private final MachineRepository machineRepository;
     private final UserRepository userRepository;
+    private TaskScheduler taskScheduler;
     private DecodedToken token;
     private Semaphore lock;
 
     @Autowired
-    public MachineService(MachineRepository machineRepository, UserRepository userRepository) {
-        this.logger= Logger.getLogger(this.getClass().getName());
+    public MachineService(MachineRepository machineRepository, UserRepository userRepository, TaskScheduler taskScheduler) {
+        this.logger = Logger.getLogger(this.getClass().getName());
         this.machineRepository = machineRepository;
         this.userRepository = userRepository;
+        this.taskScheduler = taskScheduler;
         this.token = null;
         this.lock = new Semaphore(1);
     }
-
 
 
     @Override
@@ -58,7 +56,7 @@ public class MachineService implements IService<Machine, Long> {
     }
 
     @Override
-    public Optional<Machine> findById(Long var1, String jwt){
+    public Optional<Machine> findById(Long var1, String jwt) {
         return machineRepository.findById(var1);
     }
 
@@ -199,8 +197,8 @@ public class MachineService implements IService<Machine, Long> {
         logger.info("DESTROY MACHINE...");
         token = DecodedToken.getDecoded(jwt);
         if (token.can_destroy_machines) {
-            if (findById(machineId,jwt).isPresent()) {
-                Machine machine = findById(machineId,jwt).get();
+            if (findById(machineId, jwt).isPresent()) {
+                Machine machine = findById(machineId, jwt).get();
                 if (machine.getStatus().equals(MachineStatus.STOPPED)) {
                     machine.setActive(false); // soft delete
                     machineRepository.save(machine);
@@ -221,12 +219,12 @@ public class MachineService implements IService<Machine, Long> {
     public List<Machine> searchMachines(String name, List<String> status, Date dateFrom, Date dateTo, String jwt) throws UnsupportedEncodingException {
         logger.info("SEARCH MACHINES...");
         token = DecodedToken.getDecoded(jwt);
-        if(token.can_search_machines){
-            if (name == null && status == null && dateFrom == null && dateTo == null){
+        if (token.can_search_machines) {
+            if (name == null && status == null && dateFrom == null && dateTo == null) {
                 return machineRepository.findAll();
             } else {
                 List<MachineStatus> statusEnum = new ArrayList<>();
-                if(status != null) {
+                if (status != null) {
                     for (String s : status) {
                         if (s.equalsIgnoreCase("STOPPED")) {
                             statusEnum.add(MachineStatus.STOPPED);
@@ -241,8 +239,58 @@ public class MachineService implements IService<Machine, Long> {
         } else {
             throw new ApiException(HttpStatus.FORBIDDEN, "can_search_machines privilege missing", null);
         }
-
     }
 
+    public void scheduleTask(ScheduleTask task, String jwt) throws UnsupportedEncodingException, InterruptedException {
+        //System.out.println(task.dayOfWeek); * * * * * * WORKS
+        String cronString = String.format("%s %s %s %s %s %s", task.minute, task.hour, task.dayOfMonth, task.month, task.dayOfWeek, task.year);
+        CronTrigger cronTrigger = new CronTrigger(cronString);
+        //CronTrigger cronTrigger = new CronTrigger("12 2 * * * *");
+//        CronTrigger cronTrigger = new CronTrigger("0 * * * * *"); // WORKS
+        // ? Invalid value for DayOfWeek (valid values 1 - 7): 2022
+        // ? java.lang.NumberFormatException: For input string: "?"
+        // CronTrigger cronTrigger = new CronTrigger(cronExpression);
+
+        // TEST SCHEDULE
+        this.taskScheduler.schedule(() -> {
+            System.out.println("SCHEDULE TEST");
+        }, cronTrigger);
+
+        // SCHEDULE START TASK
+        if(task.methodName.equalsIgnoreCase("START")){
+            logger.info("SCHEDULE START MACHINE...");
+            this.taskScheduler.schedule(() -> {
+                try {
+                    startMachine(task.machineId, jwt);
+                } catch (InterruptedException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }, cronTrigger);
+        }
+        // SCHEDULE STOP TASK
+        if(task.methodName.equalsIgnoreCase("STOP")){
+            logger.info("SCHEDULE STOP MACHINE...");
+            this.taskScheduler.schedule(() -> {
+                try {
+                    stopMachine(task.machineId, jwt);
+                } catch (InterruptedException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }, cronTrigger);
+        }
+        // SCHEDULE RESTART TASK
+        if(task.methodName.equalsIgnoreCase("RESTART")){
+            logger.info("SCHEDULE RESTART MACHINE...");
+            this.taskScheduler.schedule(() -> {
+                try {
+                    restartMachine(task.machineId, jwt);
+                } catch (InterruptedException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }, cronTrigger);
+        }
+
+
+    }
 
 }

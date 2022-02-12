@@ -6,10 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import raf.edu.rs.projekat.model.Machine;
 import raf.edu.rs.projekat.model.MachineStatus;
+import raf.edu.rs.projekat.model.ScheduleTask;
 import raf.edu.rs.projekat.model.User;
 import raf.edu.rs.projekat.service.MachineService;
 import raf.edu.rs.projekat.service.UserService;
 
+import javax.print.attribute.standard.Media;
 import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.util.List;
@@ -91,6 +93,13 @@ public class MachineController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Machine> searchMachine(@RequestParam(required = false) String machineName, @RequestParam(required = false) List<String> status, @RequestParam(required = false) Date dateFrom, @RequestParam(required = false) Date dateTo, @RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException {
         return machineService.searchMachines(machineName, status, dateFrom, dateTo, token);
+    }
+
+    @RequestMapping(value = "/schedule",
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public void scheduleTask(@RequestBody ScheduleTask task, @RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException, InterruptedException {
+        machineService.scheduleTask(task, token);
     }
 
 
