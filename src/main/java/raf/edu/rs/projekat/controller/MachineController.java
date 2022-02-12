@@ -91,7 +91,7 @@ public class MachineController {
 
     @PostMapping(value = "/search",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Machine> searchMachine(@RequestParam(required = false) String machineName, @RequestParam(required = false) List<String> status, @RequestParam(required = false) Date dateFrom, @RequestParam(required = false) Date dateTo, @RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException {
+    public List<Machine> searchMachine(@RequestParam(required = false) String machineName, @RequestParam(required = false) List<String> status, @RequestParam(required = false) String dateFrom, @RequestParam(required = false) String dateTo, @RequestHeader(name = "Authorization") String token) throws UnsupportedEncodingException {
         return machineService.searchMachines(machineName, status, dateFrom, dateTo, token);
     }
 

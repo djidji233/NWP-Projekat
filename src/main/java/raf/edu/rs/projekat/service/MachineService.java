@@ -224,11 +224,11 @@ public class MachineService implements IService<Machine, Long> {
 
 
     // SEARCH
-    public List<Machine> searchMachines(String name, List<String> status, Date dateFrom, Date dateTo, String jwt) throws UnsupportedEncodingException {
+    public List<Machine> searchMachines(String name, List<String> status, String dateFromStr, String dateToStr, String jwt) throws UnsupportedEncodingException {
         logger.info("SEARCH MACHINES...");
         token = DecodedToken.getDecoded(jwt);
         if (token.can_search_machines) {
-            if (name == null && status == null && dateFrom == null && dateTo == null) {
+            if (name == null && status == null && dateFromStr == null && dateToStr == null) {
                 return machineRepository.findAll();
             } else {
                 List<MachineStatus> statusEnum = new ArrayList<>();
@@ -242,6 +242,18 @@ public class MachineService implements IService<Machine, Long> {
                         }
                     }
                 }
+                Date dateFrom = null;
+                Date dateTo = null;
+                if (dateFromStr != null && !dateFromStr.equalsIgnoreCase("")) {
+                    dateFrom = Date.valueOf(dateFromStr);
+                }
+                if (dateToStr != null && !dateToStr.equalsIgnoreCase("")) {
+                    dateTo = Date.valueOf(dateToStr);
+                }
+                if(name==null || name.equalsIgnoreCase("")){
+                    name = null;
+                }
+
                 return machineRepository.search(name, statusEnum, dateFrom, dateTo);
             }
         } else {
