@@ -3,6 +3,7 @@ import {UserService} from "../../services/user/user.service";
 import {ActivatedRoute} from "@angular/router";
 import {MachineService} from "../../services/machine/machine.service";
 import {Machine} from "../../model";
+import {LoginService} from "../../services/login.service";
 
 @Component({
   selector: 'app-machine-search',
@@ -16,13 +17,15 @@ export class MachineSearchComponent implements OnInit {
   dateFrom:string
   dateTo:string
   machines: Machine[]
+  loggedUser:string;
 
-  constructor(private machineService: MachineService, private activatedRoute: ActivatedRoute) {
+  constructor(private machineService: MachineService, private loginService:LoginService,private activatedRoute: ActivatedRoute) {
     this.machineName=''
     this.status=''
     this.dateFrom=''
     this.dateTo=''
     this.machines=[]
+    this.loggedUser = loginService.getPrivileges().sub
   }
 
   ngOnInit(): void {

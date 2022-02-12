@@ -5,11 +5,14 @@
     <form (submit)="search(machineName, status, dateFrom, dateTo)" class="mb-5">
       <div class="form-group mb-2">
         <label for="name">machine name</label>
-        <input type="text" class="form-control" id="name" name="name" placeholder="machine name" [(ngModel)]="machineName">
+        <input type="text" class="form-control" id="name" name="name" placeholder="machine name"
+               [(ngModel)]="machineName">
         <label for="status">status</label>
-        <input type="text" class="form-control" id="status" name="status" placeholder="machine status" [(ngModel)]="status">
+        <input type="text" class="form-control" id="status" name="status" placeholder="machine status"
+               [(ngModel)]="status">
         <label for="dateFrom">date from</label>
-        <input type="text" class="form-control" id="dateFrom" name="dateFrom" placeholder="date from" [(ngModel)]="dateFrom">
+        <input type="text" class="form-control" id="dateFrom" name="dateFrom" placeholder="date from"
+               [(ngModel)]="dateFrom">
         <label for="dateTo">date to</label>
         <input type="text" class="form-control" id="dateTo" name="dateTo" placeholder="date to" [(ngModel)]="dateTo">
       </div>
@@ -30,12 +33,17 @@
       <th>created by</th>
       <th>created at</th>
     </tr>
+
     <tr *ngFor="let machine of machines">
-      <td *ngIf="machine.active">{{machine.machineId}}</td>
-      <td *ngIf="machine.active">{{machine.name}}</td>
-      <td *ngIf="machine.active">{{machine.status}}</td>
-      <td *ngIf="machine.active">{{machine.createdBy.username}}</td>
-      <td *ngIf="machine.active">{{machine.createdAt}}</td>
+      <ng-container *ngIf="machine.active">
+        <ng-container *ngIf="machine.createdBy.username==loggedUser">
+          <td>{{machine.machineId}}</td>
+          <td>{{machine.name}}</td>
+          <td>{{machine.status}}</td>
+          <td>{{machine.createdBy.username}}</td>
+          <td>{{machine.createdAt}}</td>
+        </ng-container>
+      </ng-container>
     </tr>
   </table>
 </div>

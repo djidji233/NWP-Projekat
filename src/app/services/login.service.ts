@@ -9,11 +9,24 @@ import jwt_decode from "jwt-decode";
 export class LoginService implements OnDestroy {
 
   private readonly loginUrl = 'http://localhost:8080/auth/login';
-  private decodedJWT: DecodedJWT | undefined;
+  private decodedJWT: DecodedJWT;
 
 
   constructor(private http: HttpClient) {
-
+      this.decodedJWT =  {
+        can_create_machines: false,
+        can_create_users: false,
+        can_delete_users: false,
+        can_read_users: false,
+        can_restart_machines: false,
+        can_search_machines: false,
+        can_start_machines: false,
+        can_stop_machines: false,
+        can_update_users: false,
+        exp: 9999999999,
+        iat: 9999999999,
+        sub: 'init'
+      }
   }
 
   ngOnDestroy(): void {
