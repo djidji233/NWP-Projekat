@@ -1,0 +1,41 @@
+<div>
+  <h3>Search</h3>
+
+  <div>
+    <form (submit)="search(machineName, status, dateFrom, dateTo)" class="mb-5">
+      <div class="form-group mb-2">
+        <label for="name">machine name</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="machine name" [(ngModel)]="machineName">
+        <label for="status">status</label>
+        <input type="text" class="form-control" id="status" name="status" placeholder="machine status" [(ngModel)]="status">
+        <label for="dateFrom">date from</label>
+        <input type="text" class="form-control" id="dateFrom" name="dateFrom" placeholder="date from" [(ngModel)]="dateFrom">
+        <label for="dateTo">date to</label>
+        <input type="text" class="form-control" id="dateTo" name="dateTo" placeholder="date to" [(ngModel)]="dateTo">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
+
+<div class="col-sm-4">
+  <h1>Machines</h1>
+
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>name</th>
+      <th>status</th>
+      <th>created by</th>
+      <th>created at</th>
+    </tr>
+    <tr *ngFor="let machine of machines">
+      <td *ngIf="machine.active">{{machine.id}}</td>
+      <td *ngIf="machine.active">{{machine.name}}</td>
+      <td *ngIf="machine.active">{{machine.status}}</td>
+      <td *ngIf="machine.active">{{machine.createdBy}}</td>
+      <td *ngIf="machine.active">{{machine.createdAt}}</td>
+    </tr>
+  </table>
+</div>

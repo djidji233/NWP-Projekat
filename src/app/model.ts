@@ -17,20 +17,18 @@ export interface DecodedJWT {
   can_create_machines: boolean
 }
 
-export enum PermissionType {
-  CAN_CREATE_USERS,
-  CAN_READ_USERS,
-  CAN_UPDATE_USERS,
-  CAN_DELETE_USERS
+export enum MachineStatus {
+  RUNNING, STOPPED
 }
 
-export interface Permission {
+export interface Machine {
   id: number,
-  type: PermissionType,
-  value: boolean,
-  user: User
+  name: string,
+  status: string,
+  createdBy:User,
+  createdAt: Date,
+  active:boolean
 }
-
 
 
 export interface User {
@@ -51,4 +49,11 @@ export interface User {
   can_destroy_machines: boolean
 }
 
+export interface ErrorMessage {
+  id: number,
+  date: Date,
+  machineId: number,
+  methodName: string,
+  errorMessage: string
+}
 
