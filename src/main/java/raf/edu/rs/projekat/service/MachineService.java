@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import raf.edu.rs.projekat.controller.ApiException;
 import raf.edu.rs.projekat.model.*;
+import raf.edu.rs.projekat.repository.ErrorMessageRepository;
 import raf.edu.rs.projekat.repository.MachineRepository;
 import raf.edu.rs.projekat.repository.UserRepository;
 
@@ -35,15 +36,17 @@ public class MachineService implements IService<Machine, Long> {
     private Logger logger;
     private final MachineRepository machineRepository;
     private final UserRepository userRepository;
+    private final ErrorMessageRepository errorMessageRepository;
     private TaskScheduler taskScheduler;
     private DecodedToken token;
     private Semaphore lock;
 
     @Autowired
-    public MachineService(MachineRepository machineRepository, UserRepository userRepository, TaskScheduler taskScheduler) {
+    public MachineService(MachineRepository machineRepository, UserRepository userRepository, ErrorMessageRepository errorMessageRepository, TaskScheduler taskScheduler) {
         this.logger = Logger.getLogger(this.getClass().getName());
         this.machineRepository = machineRepository;
         this.userRepository = userRepository;
+        this.errorMessageRepository = errorMessageRepository;
         this.taskScheduler = taskScheduler;
         this.token = null;
         this.lock = new Semaphore(1);
@@ -88,6 +91,11 @@ public class MachineService implements IService<Machine, Long> {
                         logger.info("STATUS CHANGED TO: " + machine.getStatus());
                         return machine.getStatus();
                     } else {
+                        // NAPRAVITI NOVI MachineException koji ce moci da primi i scheduled=true
+//                        saveErrorMessage(new Date(Calendar.getInstance().getTimeInMillis()),
+//                                machineId,
+//                                "START",
+//                                "ERROR AT SCHEDULED START");
                         throw new ApiException(HttpStatus.BAD_REQUEST, "machine status must be STOPPED", null);
                     }
                 } else {
@@ -256,41 +264,55 @@ public class MachineService implements IService<Machine, Long> {
             System.out.println("SCHEDULE TEST");
         }, cronTrigger);
 
+
         // SCHEDULE START TASK
-        if(task.methodName.equalsIgnoreCase("START")){
+        if (task.methodName.equalsIgnoreCase("START")) {
             logger.info("SCHEDULE START MACHINE...");
             this.taskScheduler.schedule(() -> {
                 try {
                     startMachine(task.machineId, jwt);
                 } catch (InterruptedException | UnsupportedEncodingException e) {
+
                     e.printStackTrace();
                 }
             }, cronTrigger);
         }
         // SCHEDULE STOP TASK
-        if(task.methodName.equalsIgnoreCase("STOP")){
+        if (task.methodName.equalsIgnoreCase("STOP")) {
             logger.info("SCHEDULE STOP MACHINE...");
             this.taskScheduler.schedule(() -> {
                 try {
                     stopMachine(task.machineId, jwt);
                 } catch (InterruptedException | UnsupportedEncodingException e) {
+
                     e.printStackTrace();
                 }
             }, cronTrigger);
         }
         // SCHEDULE RESTART TASK
-        if(task.methodName.equalsIgnoreCase("RESTART")){
+        if (task.methodName.equalsIgnoreCase("RESTART")) {
             logger.info("SCHEDULE RESTART MACHINE...");
             this.taskScheduler.schedule(() -> {
                 try {
                     restartMachine(task.machineId, jwt);
                 } catch (InterruptedException | UnsupportedEncodingException e) {
+//                    saveErrorMessage(new Date(Calendar.getInstance().getTimeInMillis()),
+//                                    task.machineId,
+//                                    task.methodName,
+//                                    "ERROR AT SCHEDULED RESTART");
                     e.printStackTrace();
                 }
             }, cronTrigger);
         }
+    }
 
-
+    private void saveErrorMessage(Date date, Long machineId, String methodName, String msg) {
+        ErrorMessage errorMessage = new ErrorMessage();
+        errorMessage.setDate(date);
+        errorMessage.setMachineId(machineId);
+        errorMessage.setMethodName(methodName);
+        errorMessage.setErrorMessage(msg);
+        errorMessageRepository.save(errorMessage);
     }
 
 }
