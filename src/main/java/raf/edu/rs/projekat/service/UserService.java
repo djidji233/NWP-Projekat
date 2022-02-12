@@ -46,7 +46,7 @@ public class UserService implements IService<User, Long>, UserDetailsService {
         logger.info("CREATE USER...");
         token = DecodedToken.getDecoded(jwt);
         if (token.can_create_users) {
-            user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+            //user.setPassword(this.passwordEncoder.encode(user.getPassword()));
             return this.userRepository.save(user);
         } else {
             throw new ApiException(HttpStatus.FORBIDDEN, "can_create_users privilege missing", null);
@@ -67,7 +67,7 @@ public class UserService implements IService<User, Long>, UserDetailsService {
 
     @Override
     public <S extends User> S save(S var1, String jwt) {
-        //var1.setPassword(this.passwordEncoder.encode(var1.getPassword()));
+        var1.setPassword(this.passwordEncoder.encode(var1.getPassword()));
         return userRepository.save(var1);
     }
 
