@@ -2,6 +2,21 @@ export interface LoginResponse {
   jwt: string;
 }
 
+export interface DecodedJWT {
+  sub: string,
+  can_restart_machines: boolean,
+  can_search_machines: boolean,
+  can_delete_users: boolean,
+  can_update_users: boolean,
+  can_start_machines: boolean,
+  can_stop_machines: boolean,
+  can_read_users: boolean,
+  exp: number,
+  iat: number,
+  can_create_users: boolean,
+  can_create_machines: boolean
+}
+
 export enum PermissionType {
   CAN_CREATE_USERS,
   CAN_READ_USERS,
