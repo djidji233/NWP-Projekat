@@ -91,6 +91,7 @@ export class UserService {
 
   public deleteUser(userId:number) {
     let res = this.http.delete(this.usersUrl + '/' + userId,{
+      observe:'response', // iz ovoga izvuci http res code ?
       headers: {
         Authorization: this.authorization
       }

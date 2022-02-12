@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../services/user/user.service";
 import {Router} from "@angular/router";
+import {DecodedJWT} from "../../model";
+import {LoginService} from "../../services/login.service";
 
 @Component({
   selector: 'app-user-add',
@@ -23,9 +25,10 @@ export class UserAddComponent implements OnInit {
   public can_restart_machines: boolean
   public can_create_machines: boolean
   public can_destroy_machines: boolean
+  loggedUser: DecodedJWT
 
 
-  constructor(private userService: UserService, private router: Router) {
+  constructor(private userService: UserService, private loginService: LoginService, private router: Router) {
     this.firstName = '';
     this.lastName = '';
     this.username = '';
@@ -40,6 +43,7 @@ export class UserAddComponent implements OnInit {
     this.can_restart_machines = false
     this.can_create_machines = false
     this.can_destroy_machines = false
+    this.loggedUser = loginService.getPrivileges()
   }
 
   ngOnInit(): void {
@@ -59,12 +63,15 @@ export class UserAddComponent implements OnInit {
           can_restart_machines: boolean,
           can_create_machines: boolean,
           can_destroy_machines: boolean) {
-    console.log(firstName,lastName,username,password,can_create_users,can_read_users,can_update_users,can_delete_users,can_search_machines,can_start_machines,can_stop_machines,can_restart_machines,can_create_machines,can_destroy_machines)
-
-    this.userService.addUser(firstName,lastName,username,password,can_create_users,can_read_users,can_update_users,can_delete_users,can_search_machines,can_start_machines,can_stop_machines,can_restart_machines,can_create_machines,can_destroy_machines).subscribe(user=>{
-      this.userService.fetchUsers();
-      this.router.navigate(['/users'])
-    })
+    console.log(firstName, lastName, username, password, can_create_users, can_read_users, can_update_users, can_delete_users, can_search_machines, can_start_machines, can_stop_machines, can_restart_machines, can_create_machines, can_destroy_machines)
+    if(!this.loggedUser.can_create_machines){
+      window.alert("you dont have the privilege required!")
+    } else {
+      this.userService.addUser(firstName, lastName, username, password, can_create_users, can_read_users, can_update_users, can_delete_users, can_search_machines, can_start_machines, can_stop_machines, can_restart_machines, can_create_machines, can_destroy_machines).subscribe(user => {
+        this.userService.fetchUsers();
+        this.router.navigate(['/users'])
+      })
+    }
   }
 
 }
