@@ -36,8 +36,8 @@
       <td>{{user.can_search_machines}}</td>
       <!-- rounterLink uzima za vrednost niz, prvi parametar u nizu je string,
           drugi je number i bice konkatenirani da bi se dobio url -->
-      <td><input type="button" [routerLink]="['/users/edit',user.id]" value="Edit"></td>
-      <td><input type="button" (submit)="deleteUser(user.id)" value="Delete"></td>
+      <td><input type="button" [routerLink]="['/users/edit',user.userId]" value="Edit"></td>
+      <td><input type="button" (submit)="deleteUser(user.userId)" value="Delete"></td>
     </tr>
   </table>
 </div>

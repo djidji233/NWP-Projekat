@@ -26,6 +26,14 @@ export class MachineSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.fetch();
+  }
+
+  fetch() {
+    this.machineService.fetchMachines().subscribe(machines => {
+      console.log(machines);
+      this.machines = machines;
+    });
   }
 
   search(machineName:string, status:string, dateFrom:string, dateTo:string){

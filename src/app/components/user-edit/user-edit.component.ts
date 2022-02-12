@@ -51,7 +51,7 @@ export class UserEditComponent implements OnInit {
 
     this.userService.fetchUsers().subscribe((users: User[]) => {
       console.log(users);
-      let user = users.filter(user => user.id === this.id)[0];
+      let user = users.filter(user => user.userId === this.id)[0];
       this.firstName = user.firstName
       this.lastName = user.lastName
       this.username = user.username;

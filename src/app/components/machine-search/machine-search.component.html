@@ -31,10 +31,10 @@
       <th>created at</th>
     </tr>
     <tr *ngFor="let machine of machines">
-      <td *ngIf="machine.active">{{machine.id}}</td>
+      <td *ngIf="machine.active">{{machine.machineId}}</td>
       <td *ngIf="machine.active">{{machine.name}}</td>
       <td *ngIf="machine.active">{{machine.status}}</td>
-      <td *ngIf="machine.active">{{machine.createdBy}}</td>
+      <td *ngIf="machine.active">{{machine.createdBy.username}}</td>
       <td *ngIf="machine.active">{{machine.createdAt}}</td>
     </tr>
   </table>

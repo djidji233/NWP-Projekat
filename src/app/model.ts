@@ -22,7 +22,7 @@ export enum MachineStatus {
 }
 
 export interface Machine {
-  id: number,
+  machineId: number,
   name: string,
   status: string,
   createdBy:User,
@@ -32,7 +32,7 @@ export interface Machine {
 
 
 export interface User {
-  id: number,
+  userId: number,
   firstName: string,
   lastName: string,
   username: string,

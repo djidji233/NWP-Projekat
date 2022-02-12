@@ -12,7 +12,7 @@ import {User} from "../../model";
 export class UserService {
 
   private readonly usersUrl = 'http://localhost:8080/api/users';
-  private authorization = 'Bearer ' + localStorage.getItem('jwt');
+  private authorization = 'Bearer ' + localStorage.getItem('JWT');
   private users: Observable<User[]>;
 
   constructor(private http: HttpClient) {
