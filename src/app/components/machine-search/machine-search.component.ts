@@ -12,8 +12,8 @@ import {LoginService} from "../../services/login.service";
 })
 export class MachineSearchComponent implements OnInit {
 
-  machineName:string;
-  status:string;
+  machineName:string
+  status:string
   dateFrom:string
   dateTo:string
   machines: Machine[]
@@ -40,32 +40,42 @@ export class MachineSearchComponent implements OnInit {
   }
 
   search(machineName:string, status:string, dateFrom:string, dateTo:string){
-
+    this.machineService.searchMachines(machineName,status,dateFrom,dateTo).subscribe(machines => {
+      console.log(machines);
+      this.machines = machines
+      //this.ngOnInit()
+    })
   }
 
   startMachine(machineId: number) {
     this.machineService.startMachine(machineId).subscribe(async () => {
       await delay(12000);
-      this.fetch()
+      //this.fetch()
+      this.ngOnInit()
     })
   }
   stopMachine(machineId:number){
     this.machineService.stopMachine(machineId).subscribe(async () => {
       await delay(12000);
-      this.fetch()
+      // this.fetch()
+      this.ngOnInit()
     })
   }
   restartMachine(machineId:number){
     this.machineService.restartMachine(machineId).subscribe(async () => {
       await delay(6000);
-      this.fetch()
+      // this.fetch()
+      this.ngOnInit()
+      //location.reload()
       await delay(6000);
-      this.fetch()
+      // this.fetch()
+      this.ngOnInit()
     })
   }
   destroyMachine(machineId:number){
     this.machineService.destroyMachine(machineId).subscribe(()=>{
-      this.fetch()
+      // this.fetch()
+      this.ngOnInit()
     })
   }
 

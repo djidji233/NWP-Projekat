@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {Machine, MachineStatus} from "../../model";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,7 @@ export class MachineService {
   }
 
   public createMachine(machineName: string): Observable<Machine> {
-    return this.http.post<Machine>(this.machinesUrl + '/create', {},{
+    return this.http.post<Machine>(this.machinesUrl + '/create', {}, {
       params: {
         machineName: machineName
       }, headers: {
@@ -40,8 +40,8 @@ export class MachineService {
     })
   }
 
-  public startMachine(machineId:number) : Observable<MachineStatus> {
-    return this.http.put<MachineStatus>(this.machinesUrl + '/start', {},{
+  public startMachine(machineId: number): Observable<MachineStatus> {
+    return this.http.put<MachineStatus>(this.machinesUrl + '/start', {}, {
       params: {
         machineId: machineId
       }, headers: {
@@ -51,8 +51,8 @@ export class MachineService {
     })
   }
 
-  public stopMachine(machineId:number) : Observable<MachineStatus> {
-    return this.http.put<MachineStatus>(this.machinesUrl + '/stop', {},{
+  public stopMachine(machineId: number): Observable<MachineStatus> {
+    return this.http.put<MachineStatus>(this.machinesUrl + '/stop', {}, {
       params: {
         machineId: machineId
       }, headers: {
@@ -62,8 +62,8 @@ export class MachineService {
     })
   }
 
-  public restartMachine(machineId:number) : Observable<MachineStatus> {
-    return this.http.put<MachineStatus>(this.machinesUrl + '/restart', {},{
+  public restartMachine(machineId: number): Observable<MachineStatus> {
+    return this.http.put<MachineStatus>(this.machinesUrl + '/restart', {}, {
       params: {
         machineId: machineId
       }, headers: {
@@ -73,8 +73,8 @@ export class MachineService {
     })
   }
 
-  public destroyMachine(machineId:number) {
-    return this.http.put(this.machinesUrl + '/destroy', {},{
+  public destroyMachine(machineId: number) {
+    return this.http.put(this.machinesUrl + '/destroy', {}, {
       params: {
         machineId: machineId
       }, headers: {
@@ -82,6 +82,41 @@ export class MachineService {
         //'Access-Control-Allow-Origin':'*'
       }
     })
+  }
+
+  public searchMachines(machineName: string, status: string, dateFrom: string, dateTo: string): Observable<Machine[]> {
+    //console.log(machineName, status, dateFrom, dateTo)
+
+    let params = new HttpParams()
+
+
+    if(machineName!=''){
+      console.log("machineName: ",machineName)
+      params.append("machineName", machineName)
+    }
+    if(dateFrom!=''){
+      console.log("dateFrom: ",dateFrom)
+      params.append("dateFrom", dateFrom)
+    }
+    if(dateTo!=''){
+      console.log("dateTo: ",dateTo)
+      params.append("dateTo", dateTo)
+    }
+    if(status!=''){
+      console.log("status: ",status)
+     //let statusList[] = status.split(",")
+      params.append("status", status)
+    }
+
+    this.machines = this.http.post<Machine[]>(this.machinesUrl + '/search', {}, {
+    params: params,
+      headers: {
+        Authorization: this.authorization
+        //'Access-Control-Allow-Origin':'*'
+      }
+    })
+
+    return this.machines
   }
 
 }
