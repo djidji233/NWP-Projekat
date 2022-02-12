@@ -19,7 +19,9 @@ export class MachineCreateComponent implements OnInit {
   }
 
   create(machineName:string){
-
+      this.machineService.createMachine(machineName).subscribe(machine => {
+        console.log(machine)
+      });
   }
 
 }

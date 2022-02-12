@@ -51,6 +51,6 @@ export class LoginService implements OnDestroy {
 
 
   logout() {
-    localStorage.removeItem("jwt")
+    localStorage.removeItem("JWT")
   }
 }

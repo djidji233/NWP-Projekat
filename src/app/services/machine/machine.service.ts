@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
-import {Machine, User} from "../../model";
+import {Machine} from "../../model";
 import {HttpClient} from "@angular/common/http";
 
 @Injectable({
@@ -29,5 +29,19 @@ export class MachineService {
     return this.machines;
   }
 
+  public createMachine(machineName: string): Observable<Machine> {
+    return this.http.post<Machine>(this.machinesUrl + '/create', {},{
+      params: {
+        machineName: machineName
+      }, headers: {
+        Authorization: this.authorization,
+        //'Access-Control-Allow-Origin':'*'
+      }
+    })
+  }
 
 }
+
+
+
+
