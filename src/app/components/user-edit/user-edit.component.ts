@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../services/user/user.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../../model";
 
 @Component({
@@ -13,6 +13,7 @@ export class UserEditComponent implements OnInit {
   public firstName: string;
   public lastName: string;
   public username: string;
+  public password: string;
   public can_create_users: boolean;
   public can_read_users: boolean
   public can_update_users: boolean
@@ -25,11 +26,12 @@ export class UserEditComponent implements OnInit {
   public can_destroy_machines: boolean
 
 
-  constructor(private userService: UserService, private activatedRoute: ActivatedRoute) {
+  constructor(private userService: UserService, private activatedRoute: ActivatedRoute, private router: Router) {
     this.id = 0;
     this.firstName = '';
     this.lastName = '';
     this.username = '';
+    this.password = '';
     this.can_create_users = false
     this.can_read_users = false
     this.can_update_users = false
@@ -65,12 +67,6 @@ export class UserEditComponent implements OnInit {
       this.can_restart_machines = user.can_restart_machines
       this.can_create_machines = user.can_create_machines
       this.can_destroy_machines = user.can_destroy_machines
-      //   for(let permission in user.permissions){
-      //
-      //   }
-      //   this.firstName = user.firstName
-      //   this.firstName = user.firstName
-      //   this.firstName = user.firstName
     });
 
 
@@ -80,6 +76,7 @@ export class UserEditComponent implements OnInit {
            firstName: string,
            lastName: string,
            username: string,
+           password: string,
            can_create_users: boolean,
            can_read_users: boolean,
            can_update_users: boolean,
@@ -90,21 +87,13 @@ export class UserEditComponent implements OnInit {
            can_restart_machines: boolean,
            can_create_machines: boolean,
            can_destroy_machines: boolean) {
-    // //console.log(firstName,lastName,email,password,createp,readp,updatep,deletep)
-    // let createpermission = new PermissionClass(PermissionType.CAN_CREATE_USERS, createp)
-    // let readpermission = new PermissionClass(PermissionType.CAN_READ_USERS, readp)
-    // let updatepermission = new PermissionClass(PermissionType.CAN_UPDATE_USERS, updatep)
-    // let deletepermission = new PermissionClass(PermissionType.CAN_DELETE_USERS, deletep)
-    // let permissions = []
-    // permissions.push(createpermission, readpermission, updatepermission, deletepermission)
-    // // let user = new UserClass(firstName, lastName, email, password)
-    // // user.addPermission(createpermission)
-    // // user.addPermission(readpermission)
-    // // user.addPermission(updatepermission)
-    // // user.addPermission(deletepermission)
-    // this.userService.updateUser(id,firstName, lastName, email, password,permissions).subscribe(user=>{
-    //   console.log(user)
-    // })
+    this.userService.updateUser(id, firstName, lastName, username, password,
+      can_create_users, can_read_users, can_update_users, can_delete_users, can_search_machines,
+      can_start_machines, can_stop_machines, can_restart_machines, can_create_machines, can_destroy_machines).subscribe(user => {
+        this.userService.fetchUsers();
+        this.router.navigate(['/users'])
+      }
+    )
   }
 
 }

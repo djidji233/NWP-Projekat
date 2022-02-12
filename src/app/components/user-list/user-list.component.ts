@@ -2,7 +2,8 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {UserService} from 'src/app/services/user/user.service';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {User} from "../../model";
+import {DecodedJWT, User} from "../../model";
+import {LoginService} from "../../services/login.service";
 
 @Component({
   selector: 'app-user-list',
@@ -12,11 +13,12 @@ import {User} from "../../model";
 export class UserListComponent implements OnInit {
 
   public users: User[];
-  // public permissions = [];
+  loggedUser: DecodedJWT;
 
   // Pomocu parametra u konstruktoru injektujemo UserService instancu u UserListComponent
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private loginService: LoginService) {
     this.users = [];
+    this.loggedUser = loginService.getPrivileges()
   }
 
   ngOnInit(): void {
@@ -30,9 +32,11 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  deleteUser(userId:number){
-    this.userService.deleteUser(userId);
-    this.fetch()
+  deleteUser(userId: number) {
+    this.userService.deleteUser(userId).subscribe(() => {
+      this.ngOnInit()
+    })
+
   }
 
 

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../services/user/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-user-add',
@@ -24,7 +25,7 @@ export class UserAddComponent implements OnInit {
   public can_destroy_machines: boolean
 
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private router: Router) {
     this.firstName = '';
     this.lastName = '';
     this.username = '';
@@ -61,7 +62,8 @@ export class UserAddComponent implements OnInit {
     console.log(firstName,lastName,username,password,can_create_users,can_read_users,can_update_users,can_delete_users,can_search_machines,can_start_machines,can_stop_machines,can_restart_machines,can_create_machines,can_destroy_machines)
 
     this.userService.addUser(firstName,lastName,username,password,can_create_users,can_read_users,can_update_users,can_delete_users,can_search_machines,can_start_machines,can_stop_machines,can_restart_machines,can_create_machines,can_destroy_machines).subscribe(user=>{
-      console.log(user)
+      this.userService.fetchUsers();
+      this.router.navigate(['/users'])
     })
   }
 

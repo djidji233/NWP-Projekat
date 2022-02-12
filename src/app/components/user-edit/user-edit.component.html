@@ -1,15 +1,19 @@
 <div>
-  <h3>Add User</h3>
+  <h3>Edit User</h3>
 
   <div>
-    <form (submit)="editUser(id,firstName,lastName,username,can_create_users,can_read_users,can_update_users,can_delete_users,can_search_machines,can_start_machines,can_stop_machines,can_restart_machines,can_create_machines,can_destroy_machines)" class="mb-5">
+    <form (submit)="editUser(id,firstName,lastName,username,password,can_create_users,can_read_users,can_update_users,can_delete_users,can_search_machines,can_start_machines,can_stop_machines,can_restart_machines,can_create_machines,can_destroy_machines)" class="mb-5">
       <div class="form-group mb-2">
         <label for="firstName">id</label>
-        <input type="text" contenteditable="false" class="form-control" id="userId" name="userId" placeholder="userId" [(ngModel)]="id">
+        <input type="text" disabled="true" class="form-control" id="userId" name="userId" placeholder="userId" [(ngModel)]="id">
         <label for="firstName">Name</label>
         <input type="text" class="form-control" id="firstName" name="firstName" placeholder="firstName" [(ngModel)]="firstName">
         <label for="lastName">Last name</label>
         <input type="text" class="form-control" id="lastName" name="lastName" placeholder="lastName" [(ngModel)]="lastName">
+        <label for="username">username</label>
+        <input type="text" disabled="true" class="form-control" id="username" name="username" placeholder="username" [(ngModel)]="username">
+        <label for="password">password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="password" [(ngModel)]="password">
         <input type="checkbox" id="can_create_users" name="can_create_users" [(ngModel)]="can_create_users"><label>can_create_users</label><br>
         <input type="checkbox" id="can_read_users" name="can_read_users" [(ngModel)]="can_read_users"><label>can_read_users</label><br>
         <input type="checkbox" id="can_update_users" name="can_update_users" [(ngModel)]="can_update_users"><label>can_update_users</label><br>

@@ -38,7 +38,7 @@ export class UserService {
                     can_stop_machines:boolean,can_restart_machines:boolean,can_create_machines:boolean,
                     can_destroy_machines:boolean): Observable<User> {
       let user: Observable<User> = this.http.put<User>(this.usersUrl, {
-        'id':id,
+        'userId':id,
         'firstName': firstName,
         'lastName': lastName,
         'username':username,
@@ -89,7 +89,7 @@ export class UserService {
     return user;
   }
 
-  public deleteUser(userId:number): Observable<any> {
+  public deleteUser(userId:number) {
     let res = this.http.delete(this.usersUrl + '/' + userId,{
       headers: {
         Authorization: this.authorization
